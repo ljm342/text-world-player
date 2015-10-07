@@ -142,6 +142,22 @@ function nql:__init(args)
     if self.target_q then
         self.target_network = self.network:clone()
     end
+
+    -- Mask for self.w, so that only weights (excluding biases) will be l1 regularized.
+    self.mask = torch.ones(self.w:size()):float()
+    local params = self.network:parameters()
+    local acc = 0
+    for i = 1, #params do
+        param = params[i]
+        if param:dim() == 1 then
+            for j = 1, param:size(1) do
+                acc = acc + 1
+                self.mask[acc] = 0
+            end
+        else
+            acc = acc + param:nElement()
+        end
+    end
 end
 
 
@@ -217,7 +233,6 @@ function nql:getQUpdate(args)
         q_all = self.network:forward(s)
     else
         local s_tmp = tensor_to_table(s, self.state_dim, self.hist_len)
-        -- print(s_tmp)
         q_all = self.network:forward(s_tmp)
     end
 
@@ -253,6 +268,7 @@ function nql:getQUpdate(args)
     end
 
     if self.gpu >= 0 then targets = targets:cuda() end
+
 
     return targets, delta, q2_max
 end
@@ -328,6 +344,10 @@ function nql:qLearnMinibatch()
     -- accumulate update
     self.deltas:mul(0):addcdiv(self.lr, self.dw, self.tmp)
 
+    -- Update weights while considering L1 norm.
+    local lambda = 0.001
+    local l1_deltas = sign(self.w):mul(lambda):cmul(self.mask)
+    self.w:add(-l1_deltas)
     self.w:add(self.deltas)
 
     -- print(self.network:parameters())

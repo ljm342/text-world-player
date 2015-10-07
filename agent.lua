@@ -377,6 +377,7 @@ while step < opt.steps do
     end
 
     if step % opt.save_freq == 0 or step == opt.steps then
+        print(network)
         local s, a, r, s2, term = agent.valid_s, agent.valid_a, agent.valid_r,
             agent.valid_s2, agent.valid_term
         agent.valid_s, agent.valid_a, agent.valid_r, agent.valid_s2,
