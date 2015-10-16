@@ -18,20 +18,20 @@ end
 
 -- override (zero out NULL INDEX)
 function nn.LookupTable:updateOutput(input)
-   self:backCompatibility()
-   input = self:makeInputContiguous(input)
-   if input:dim() == 1 then
-      self.output:index(self.weight, 1, input)
-   elseif input:dim() == 2 then
-      self.output:index(self.weight, 1, input:view(-1))
-      self.output = self.output:view(input:size(1), input:size(2), self.weight:size(2))
-   else
-      error("input must be a vector or matrix")
-   end
+	self:backCompatibility()
+	input = self:makeInputContiguous(input)
+	if input:dim() == 1 then
+	  self.output:index(self.weight, 1, input)
+	elseif input:dim() == 2 then
+	  self.output:index(self.weight, 1, input:view(-1))
+	  self.output = self.output:view(input:size(1), input:size(2), self.weight:size(2))
+	else
+	  error("input must be a vector or matrix")
+	end
 
-	 --zero out NULL_INDEX
+	--zero out NULL_INDEX
 	local output = self.output:clone()
-  for i=1, input:size(1) do
+	for i=1, input:size(1) do
 		if input[i] == #symbols+1 then
 			output[i]:mul(0)
 		end
@@ -39,7 +39,7 @@ function nn.LookupTable:updateOutput(input)
 
 	self.output = output
 
-   return self.output
+	return self.output
 end
 
 

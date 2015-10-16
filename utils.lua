@@ -188,16 +188,8 @@ function table.tostring( tbl )
   return "{" .. table.concat( result, "," ) .. "}"
 end
 
--- Returns a tensor as well.
-function sign(tensor)
-    assert(tensor:dim() == 1, 'Only 1d tensors are supported for sign function, for now.')
-    local sign = {}
-    for i = 1, tensor:size(1) do
-        if tensor[i] > 0.0 then
-            table.insert(sign, 1)
-        else
-            table.insert(sign, -1)
-        end
-    end
-    return torch.FloatTensor(sign)
+-- Debug print
+function dp(sth)
+    print(sth)
+    io.read()
 end

@@ -143,21 +143,12 @@ function nql:__init(args)
         self.target_network = self.network:clone()
     end
 
-    -- Mask for self.w, so that only weights (excluding biases) will be l1 regularized.
-    self.mask = torch.ones(self.w:size()):float()
-    local params = self.network:parameters()
-    local acc = 0
-    for i = 1, #params do
-        param = params[i]
-        if param:dim() == 1 then
-            for j = 1, param:size(1) do
-                acc = acc + 1
-                self.mask[acc] = 0
-            end
-        else
-            acc = acc + param:nElement()
-        end
-    end
+    -- Mask for word embeddings, used in L1 regularization.
+    self.mask = self.dw:clone():fill(0)
+
+    -- for i = 1, 2000 * 20 do
+    --     self.mask[i] = 1
+    -- end
 end
 
 
@@ -344,10 +335,9 @@ function nql:qLearnMinibatch()
     -- accumulate update
     self.deltas:mul(0):addcdiv(self.lr, self.dw, self.tmp)
 
-    -- Update weights while considering L1 norm.
-    local lambda = 0.001
-    local l1_deltas = sign(self.w):mul(lambda):cmul(self.mask)
-    self.w:add(-l1_deltas)
+    -- Stupidest way to force L1 regularization.
+    -- local lambda = 1e-3
+    -- self.w:add(self.w:clone():sign():cmul(self.mask):mul(-lambda))
     self.w:add(self.deltas)
 
     -- print(self.network:parameters())

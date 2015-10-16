@@ -7,6 +7,7 @@ require 'nngraph'
 -- IMP if args is not passed, global 'args' are taken.
 
 LSTM_MODEL = nil
+LAMBDA = 1e-3 -- L1 regularization.
 
 return function(args)
 
@@ -23,6 +24,18 @@ return function(args)
        local concat = nn.ConcatTable()
        local concat2 = nn.ConcatTable()
        local input_transform = nn.ParallelTable()
+       --[[
+       L1 penalty on word embeddings.
+       Note that each occurrence of any particular word will trigger this penalty,
+       so the loss here is proportional to word occurrences. This might not be
+       desirable in terms of optimization formulation, but has a reasonable
+       intuition behind it.
+       Also LAMBDA should be negative, because we are using gradient ascent.
+       c.f. NeuralQLearner:qLearnMinibatch()
+       --]]
+    --    em_seq = nn.Sequential():add(EMBEDDING):add(nn.L1Penalty(-LAMBDA))
+    --    input_transform:add(em_seq)
+
        input_transform:add(EMBEDDING)
        input_transform:add(nn.Identity())
        input_transform:add(nn.Identity())
@@ -48,7 +61,7 @@ return function(args)
        local concat4 = nn.ConcatTable()
        concat4:add(output):add(nn.SelectTable(3))
        model:add(concat4)
-       print(model)
+       --print(model)
        return model
     end
 
@@ -118,6 +131,9 @@ return function(args)
 
         -- Mean pooling
         lstm_seq:add(nn.CAddTable())
+
+        -- L1 penalty on v_s. Again, LAMBDA has to be negative.
+        lstm_seq:add(nn.L1Penalty(-LAMBDA))
         lstm_seq:add(nn.Linear(n_hid, n_hid))
 
 

@@ -5,7 +5,7 @@
 #----------------------------------
 
 #specify the output folder for logging stats and graphs
-exp_folder="logs/run_dev/"
+exp_folder="logs/C3-vs-orig/"
 
 mkdir -p $exp_folder;
 

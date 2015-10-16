@@ -157,7 +157,6 @@ print("state_dim", opt.agent_params.state_dim)
 
 local agent = dqn[opt.agent](opt.agent_params) -- calls dqn.NeuralQLearner:init
 
-
 -- override print to always flush the output
 local old_print = print
 local print = function(...)
@@ -196,7 +195,6 @@ while step < opt.steps do
     step = step + 1
     if not RANDOM_TEST then
     	xlua.progress(step, opt.steps)
-
     	local action_index, object_index = agent:perceive(reward, state, terminal, nil, nil, available_objects, priority)
 
     	if reward > 0 then
@@ -416,7 +414,6 @@ while step < opt.steps do
         -- description embeddings
         local desc_embeddings
         if ANALYZE_TEST then
-            require 'descriptions'
             desc_embeddings = {}
             for i=1, #DESCRIPTIONS do
                 local embeddings = {}
