@@ -42,7 +42,11 @@ function nn.LookupTable:updateOutput(input)
 	return self.output
 end
 
-
-n_hid = 20
 nIndex = 2000 -- vocab size
-EMBEDDING = nn.LookupTable(nIndex, n_hid)
+-- n_hid = 10
+-- EMBEDDING = nn.LookupTable(nIndex, n_hid)
+
+
+n_hid_cont = 10	-- continues codings.
+n_hid = 20	-- sparse codings.
+EMBEDDING = nn.LookupTable(nIndex, n_hid_cont)

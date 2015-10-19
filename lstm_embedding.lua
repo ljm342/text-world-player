@@ -36,7 +36,8 @@ return function(args)
     --    em_seq = nn.Sequential():add(EMBEDDING):add(nn.L1Penalty(-LAMBDA))
     --    input_transform:add(em_seq)
 
-       input_transform:add(EMBEDDING)
+       input_transform:add(nn.Sequential():add(EMBEDDING):add(nn.Linear(n_hid_cont, n_hid)):add(nn.L1Penalty(-LAMBDA)))
+    --    input_transform:add(EMBEDDING)
        input_transform:add(nn.Identity())
        input_transform:add(nn.Identity())
 
@@ -113,7 +114,6 @@ return function(args)
     end
 
     function create_network(args)
-
         l  = LSTM(n_hid, n_hid)
 
         lstm = nn.Sequential()
@@ -133,7 +133,7 @@ return function(args)
         lstm_seq:add(nn.CAddTable())
 
         -- L1 penalty on v_s. Again, LAMBDA has to be negative.
-        lstm_seq:add(nn.L1Penalty(-LAMBDA))
+        --lstm_seq:add(nn.L1Penalty(-LAMBDA))
         lstm_seq:add(nn.Linear(n_hid, n_hid))
 
 

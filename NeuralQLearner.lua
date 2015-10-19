@@ -75,6 +75,7 @@ function nql:__init(args)
     if not err then
         print('Preloading network file:', self.network)
         -- try to load saved agent
+        torch.load(self.network)
         local err_msg, exp = pcall(torch.load, self.network)
         if not err_msg then
             error("Could not find network file ")
