@@ -47,6 +47,6 @@ nIndex = 2000 -- vocab size
 -- EMBEDDING = nn.LookupTable(nIndex, n_hid)
 
 
-n_hid_cont = 10	-- continues codings.
+n_hid_cont = 20	-- continues codings.
 n_hid = 20	-- sparse codings.
 EMBEDDING = nn.LookupTable(nIndex, n_hid_cont)

@@ -3,6 +3,18 @@ require 'nn'
 require 'rnn'
 require 'nngraph'
 
+-- used when solely requiring this file in th environment
+if not dqn then
+    dqn = {}
+    require 'framework'
+    require 'nn'
+    require 'nngraph'
+    require 'nnutils'
+    require 'TransitionTable'
+    require 'Rectifier'
+    require 'Embedding'
+end
+
 local nql = torch.class('dqn.NeuralQLearner')
 
 
